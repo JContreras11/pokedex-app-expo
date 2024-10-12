@@ -1,6 +1,8 @@
-// if (__DEV__) {
-// 	require("../ReactotronConfig");
-// }
+import { Platform } from 'react-native';
+
+if (__DEV__ && Platform.OS === 'android') {
+	require("../ReactotronConfig");
+}
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
 	DarkTheme,

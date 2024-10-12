@@ -168,7 +168,6 @@ const styles = StyleSheet.create({
 		height: 71,
 	},
 	menuIcon: {
-		// position: "absolute",
 		right: 0,
 		width: 71,
 		height: 71,
