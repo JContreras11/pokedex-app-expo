@@ -16,6 +16,7 @@ import { StoreContext } from "../../store/StoreProvider";
 import Nav from "@/components/shared/Nav";
 import { GradientText } from "universal-gradient-text";
 import { bg } from "@/assets/Media";
+import { Feather } from "@expo/vector-icons";
 
 
 const Index = () => {
