@@ -7,24 +7,37 @@ import {
 	StyleSheet,
 	ActivityIndicator,
 	FlatList,
+	TouchableOpacity,
 } from "react-native";
+import { router } from "expo-router";
+import { getPokemonById } from "../../store/sagas/pokemon";
+import { types } from "../../store/Pokemon";
 
 interface PokemonSearchProps {
 	query: string;
 }
 
 const PokemonSearch: React.FC<PokemonSearchProps> = ({ query }) => {
-	const [pokemon, setPokemon] = useState<any>(null);
+	const [pokemon, setPokemon] = useState<PokemonList | null>(null);
 	const [evolutions, setEvolutions] = useState<any[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
     const [store, dispatch] = useContext(StoreContext);
+    const [loadingPokemon, setLoadingPokemon] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (query) {
 			fetchPokemon();
 		}
 	}, [query]);
+
+    const setPokemonRoute = (pokemon: PokemonList) => {
+		setLoadingPokemon(pokemon.name);
+		getPokemonById(pokemon.name).then((res) => {
+			dispatch({ type: types.getPokemonById, payload: res });
+			setLoadingPokemon(null);
+		});
+	};
 
 	// Función para buscar los datos del Pokémon
 	const fetchPokemon = async () => {
@@ -77,8 +90,7 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ query }) => {
             
             
 			const pokemonId = pokemonData?.url.split("/").slice(0, -1).pop();
-            
-            console.log({ pokemonId });
+                    
 			evolutionsList.push({
 				name: current.species.name,
 				url: `https://pokeapi.co/api/v2/pokemon/${current.species.name}`,
@@ -92,15 +104,20 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ query }) => {
 
 	// Renderizado de cada evolución
 	const renderEvolution = ({ item }: { item: any }) => (
-		<View style={styles.evolutionItem}>
-			<Text style={styles.name}>{item.name.toUpperCase()}</Text>
-			<Image
-				source={{
-					uri: item.image,
-				}}
-				style={styles.image}
-			/>
-		</View>
+		<TouchableOpacity onPress={() => setPokemonRoute(item)}>
+			<View style={styles.evolutionItem}>
+				{loadingPokemon === item.name && (
+					<ActivityIndicator size="small" color="#fff" />
+				)}
+				<Text style={styles.name}>{item.name.toUpperCase()}</Text>
+				<Image
+					source={{
+						uri: item.image,
+					}}
+					style={styles.image}
+				/>
+			</View>
+		</TouchableOpacity>
 	);
 
 	return (
@@ -145,7 +162,6 @@ const styles = StyleSheet.create({
 	evolutionList: {
 	},
 	evolutionItem: {
-		flexDirection: "row",
 		alignItems: "center",
 		marginBottom: 10,
 	},

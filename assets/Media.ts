@@ -17,3 +17,7 @@ export const blue_box = require('./images/blue_box.png');
 export const green_box = require('./images/green_box.png');
 export const yellow_box = require('./images/yellow_box.png');
 export const red_box = require('./images/red_box.png');
+export const water_bg = require('./images/water_bg.jpg');
+export const default_bg = require('./images/default_bg.jpg');
+export const fire_bg = require('./images/fire_bg.jpg');
+export const grass_bg = require('./images/grass_bg.jpg');

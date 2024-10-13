@@ -7,11 +7,11 @@ import {
 	StyleSheet,
 	ScrollView,
 	TouchableOpacity,
-	ProgressBarAndroid,
+	ImageBackground,
 } from "react-native";
 import { StoreContext } from "../../store/StoreProvider";
 import PokemonSearch from "@/components/shared/Evolutions";
-
+import { water_bg, default_bg, fire_bg, grass_bg } from "@/assets/Media";
 
 const StackStats = () => {
 	const [store] = useContext(StoreContext);
@@ -20,16 +20,26 @@ const StackStats = () => {
 
 	if (!selectedPokemon || Object.keys(selectedPokemon).length === 0) {
 		return (
-			<ScrollView contentContainerStyle={[styles.container, { paddingBottom: 80, backgroundColor: "#000" }]}>
+			<ImageBackground source={default_bg} style={styles.container}>
 				<Text style={styles.loadingText}>No se ha seleccionado ningún Pokémon</Text>
-			</ScrollView>
+			</ImageBackground>
 		);
 	}
 
-	// Obtener el color de fondo basado en el tipo del Pokémon
-	const backgroundColor = selectedPokemon?.types && selectedPokemon.types.length > 0
-		? typeColors[selectedPokemon.types[0].type.name as keyof typeof typeColors] || '#000'
-		: '#000';
+	// Obtener la imagen de fondo basada en el tipo del Pokémon
+	const getBackgroundImage = () => {
+		const type = selectedPokemon.types[0].type.name;
+		switch (type) {
+			case 'water':
+				return water_bg;
+			case 'fire':
+				return fire_bg;
+			case 'grass':
+				return grass_bg;
+			default:
+				return default_bg;
+		}
+	};
 
 	const renderTabContent = () => {
 		switch (activeTab) {
@@ -59,33 +69,15 @@ const StackStats = () => {
 				return (
 					<View style={styles.tabContent}>
 						{selectedPokemon.moves.slice(0, 10).map((move, index) => (
-							<Text key={index} style={styles.moveText}>{move.move.name}</Text>
+							<Text key={move.move.name} style={styles.moveText}>
+								{move.move.name}
+							</Text>
 						))}
 					</View>
 				);
 			case "EVOLUTIONS":
-				// Aquí deberías obtener las evoluciones del Pokémon desde tu API
-				// Por ahora, usaré datos de ejemplo
-				// const evolutions = [
-				// 	{ name: "Bulbasaur", image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" },
-				// 	{ name: "Ivysaur", image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png" },
-				// 	{ name: "Venusaur", image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png" },
-				// ];
 				return (
 					<View style={styles.evolutionsContainer}>
-						{/* {evolutions.map((evolution, index) => (
-							<TouchableOpacity 
-								key={index} 
-								style={styles.evolutionItem}
-								onPress={() => {
-									// Aquí deberías navegar al detalle del Pokémon evolucionado
-									console.log(`Navegar a ${evolution.name}`);
-								}}
-							>
-								<Image source={{ uri: evolution.image }} style={styles.evolutionImage} />
-								<Text style={styles.evolutionName}>{evolution.name}</Text>
-							</TouchableOpacity>
-						))} */}
 						<PokemonSearch query={selectedPokemon.name} />
 					</View>
 				);
@@ -95,38 +87,38 @@ const StackStats = () => {
 	};
 
 	return (
-		<ScrollView contentContainerStyle={[styles.container, { paddingBottom: 80, backgroundColor }]}>
-			{/* Header with Back and Heart Icons */}
-			<View style={styles.header}>
-				<TouchableOpacity onPress={() => {
-					router.back();
-				}}>
-					<Text style={styles.backIcon}>←</Text>
-				</TouchableOpacity>
+		<ImageBackground source={getBackgroundImage()} style={styles.container}>
+			<ScrollView contentContainerStyle={styles.scrollViewContent} >
+				{/* Header with Back and Heart Icons */}
+				<View style={styles.header}>
+					<TouchableOpacity onPress={() => router.push("/pokemons")}>
+						<Text style={styles.backIcon}>←</Text>
+					</TouchableOpacity>
 					<Text style={styles.pokemonName}>{selectedPokemon.name}</Text>
-				<TouchableOpacity>
-					<Text style={styles.heartIcon}>♡</Text>
-				</TouchableOpacity>
-			</View>
-
-			{/* Pokemon Image */}
-			<View style={styles.imageContainer}>
-				<Image source={{ uri: selectedPokemon.sprites.front_default || "" }} style={styles.pokemonImage} />
-			</View>
-
-			{/* Stats Section */}
-			<View style={styles.statsContainer}>
-				<View style={styles.tabs}>
-					{["ABOUT", "STATS", "MOVES", "EVOLUTIONS"].map((tab) => (
-						<TouchableOpacity key={tab} onPress={() => setActiveTab(tab)}>
-							<Text style={[styles.tabText, activeTab === tab && styles.activeTab]}>{tab}</Text>
-						</TouchableOpacity>
-					))}
+					<TouchableOpacity>
+						<Text style={styles.heartIcon}>♡</Text>
+					</TouchableOpacity>
 				</View>
 
-				{renderTabContent()}
-			</View>
-		</ScrollView>
+				{/* Pokemon Image */}
+				<View style={styles.imageContainer}>
+					<Image source={{ uri: selectedPokemon.sprites.front_default || "" }} style={styles.pokemonImage} />
+				</View>
+
+				{/* Stats Section */}
+				<View style={styles.statsContainer}>
+					<View style={styles.tabs}>
+						{["ABOUT", "STATS", "MOVES", "EVOLUTIONS"].map((tab) => (
+							<TouchableOpacity key={tab} onPress={() => setActiveTab(tab)}>
+								<Text style={[styles.tabText, activeTab === tab && styles.activeTab]}>{tab}</Text>
+							</TouchableOpacity>
+						))}
+					</View>
+
+					{renderTabContent()}
+				</View>
+			</ScrollView>
+		</ImageBackground>
 	);
 };
 
@@ -178,9 +170,13 @@ const typeColors = {
 
 const styles = StyleSheet.create({
 	container: {
-		flexGrow: 1,		
+		flex: 1,
+	},
+	scrollViewContent: {
+		flexGrow: 1,
 		paddingHorizontal: 16,
 		paddingTop: 50,
+		paddingBottom: 80,
 	},
 	header: {
 		flexDirection: "row",
