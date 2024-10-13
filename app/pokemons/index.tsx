@@ -16,33 +16,13 @@ import { StoreContext } from "../../store/StoreProvider";
 import Nav from "@/components/shared/Nav";
 import { GradientText } from "universal-gradient-text";
 import { bg } from "@/assets/Media";
-import { Feather } from "@expo/vector-icons";
-import { getColors, type ImageColorsResult } from "react-native-image-colors";
 
-const useImageColors = (url: string) => {
-	const [colors, setColors] = React.useState<ImageColorsResult | null>(null);
-
-	React.useEffect(() => {
-		const url = "https://i.imgur.com/68jyjZT.jpg";
-
-		getColors(url, {
-			fallback: "#228B22",
-			cache: true,
-			key: url,
-		}).then(setColors);
-	}, []);
-
-	return colors;
-};
 
 const Index = () => {
 	const [store, dispatch] = useContext(StoreContext);
 	const [loadingPokemon, setLoadingPokemon] = useState(null);
 	const [searchTerm, setSearchTerm] = useState("");
-	const colors = useImageColors("https://i.imgur.com/68jyjZT.jpg");
-	console.log(colors);
-	  
-	  
+
 	useEffect(() => {
 		const fetchPokemons = async () => {
 			try {
@@ -112,17 +92,11 @@ const Index = () => {
 				{/* Pokémon Grid */}
 				<ScrollView contentContainerStyle={styles.contentContainer}>
 					{filteredPokemons?.map((pokemon: PokemonList, index: number) => {						
-						// const colors = useImageColors(
-						// 	`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split("/").slice(0, -1).pop()}.png`,
-						// );
-						// console.log(colors);
-
 						return (
 							<PokemonCard
 								key={pokemon.name || index}
 								name={pokemon.name}
-								image={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split("/").slice(0, -1).pop()}.png`}
-								// backgroundColor={colors}
+								image={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split("/").slice(0, -1).pop()}.png`}								
 								onPress={() => setPokemon(pokemon)}
 								isLoading={loadingPokemon === pokemon.name}
 							/>
@@ -158,7 +132,7 @@ const PokemonCard = ({
 	isLoading: boolean;
 }) => (
 	<TouchableOpacity
-		style={[styles.pokemonCard, { backgroundColor: backgroundColor?.background || "#000" }]}
+		style={[styles.pokemonCard]}
 		onPress={onPress}
 		disabled={isLoading}
 	>
