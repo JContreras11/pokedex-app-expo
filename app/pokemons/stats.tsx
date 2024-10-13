@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
 	View,
 	Text,
@@ -10,35 +10,48 @@ import {
 	ProgressBarAndroid,
 } from "react-native";
 import { StoreContext } from "../../store/StoreProvider";
+import { getColors } from "react-native-image-colors";
 
-// Placeholder images/icons
-const jigglypuff = "https://path_to_jigglypuff_image";
-const profilePicture = "https://path_to_profile_picture";
+
+const useImageColors = (url: string) => {
+	const [colors, setColors] = useState(null);
+
+	React.useEffect(() => {
+		getColors(url, {
+			fallback: "#228B22",
+			cache: true,
+			key: url,
+		}).then(setColors);
+	}, [url]);
+
+	return colors;
+};
 
 const StackStats = () => {
 	const [store] = useContext(StoreContext);
 	const selectedPokemon: Pokemon = store.selectedPokemon;
+	const colors = useImageColors(selectedPokemon?.sprites?.front_default || "");
 
 	if (!selectedPokemon || Object.keys(selectedPokemon).length === 0) {
 		return (
-			<ScrollView contentContainerStyle={[styles.container, { paddingBottom: 80 }]}>
+			<ScrollView contentContainerStyle={[styles.container, { paddingBottom: 80, backgroundColor: colors?.background || "#000" }]}>
 				<Text style={styles.loadingText}>No se ha seleccionado ningún Pokémon</Text>
 			</ScrollView>
 		);
 	}
 
 	return (
-		<ScrollView contentContainerStyle={[styles.container, { paddingBottom: 80 }]}>
+		<ScrollView contentContainerStyle={[styles.container, { paddingBottom: 80, backgroundColor: colors?.background || "#000" }]}>
 			{/* Header with Back and Heart Icons */}
 			<View style={styles.header}>
 				<TouchableOpacity onPress={() => {
 					router.back();
 				}}>
-					<Text style={styles.backIcon}>←</Text>
+					<Text style={[styles.backIcon, { color: colors?.primary || "#000" }]}>←</Text>
 				</TouchableOpacity>
-					<Text style={styles.pokemonName}>{selectedPokemon.name}</Text>
+					<Text style={[styles.pokemonName, { color: colors?.primary || "#000" }]}>{selectedPokemon.name}</Text>
 				<TouchableOpacity>
-					<Text style={styles.heartIcon}>♡</Text>
+					<Text style={[styles.heartIcon, { color: colors?.primary || "#000" }]}>♡</Text>
 				</TouchableOpacity>
 			</View>
 
@@ -98,8 +111,7 @@ const StatRow = ({ name, value, color }: { name: string; value: number; color: s
 
 const styles = StyleSheet.create({
 	container: {
-		flexGrow: 1,
-		backgroundColor: "#FFC0CB", // Rosa más claro
+		flexGrow: 1,		
 		paddingHorizontal: 16,
 		paddingTop: 50,
 	},

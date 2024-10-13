@@ -1,0 +1,30 @@
+{
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "preview2": {
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
+      }
+    },
+    "preview3": {
+      "developmentClient": true
+    },
+    "preview4": {
+      "distribution": "internal"
+    },
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://pokedex-api-nestjs.vercel.app/"
+      }
+    },
+    "test": {
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://pokedex-api-nestjs.vercel.app/"
+      }
+    }
+  }
+}

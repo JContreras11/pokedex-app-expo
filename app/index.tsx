@@ -1,4 +1,4 @@
-import { adn, bg, fire, group_1, group_2, group_3, group_4, location, pball1 } from "@/assets/Media";
+import { adn, bg, blue_box, fire, green_box, group_1, group_2, group_3, group_4, location, pball1, red_box, yellow_box } from "@/assets/Media";
 import Nav from "@/components/shared/Nav";
 import { router } from "expo-router";
 import React from "react";
@@ -13,17 +13,6 @@ import {
 	FlatList,
 } from "react-native";
 import {GradientText} from "universal-gradient-text";
-
-// Placeholder icons/images
-const pokeball = "https://path_to_pokeball_image";
-
-const dna = "https://path_to_dna_image";
-const mapPin = "https://path_to_map_pin_image";
-const pikachuSquirtle = "https://path_to_pikachu_squirtle_image";
-const gengar = "https://path_to_gengar_image";
-const bulbasaurJigglypuff = "https://path_to_bulbasaur_jigglypuff_image";
-const squirtle = "https://path_to_squirtle_image";
-const profilePicture = "https://path_to_profile_picture";
 
 const Index = () => {
 	return (
@@ -66,15 +55,16 @@ const Index = () => {
 
 				{/* Menu Buttons */}
 				<View style={styles.menuRow}>
-					<MenuButton title="Pokedex" icon={pball1} backgroundColor="#E91E63" />
-					<MenuButton title="Moves" icon={fire} backgroundColor="#FF9800" />
+					<MenuButton title="Pokedex" icon={pball1} backgroundColor="#E91E63" backgroundImage={red_box} />
+					<MenuButton title="Moves" icon={fire} backgroundColor="#FF9800" backgroundImage={yellow_box} />
 				</View>
 				<View style={styles.menuRow}>
-					<MenuButton title="Evolution" icon={adn} backgroundColor="#03A9F4" />
+					<MenuButton title="Evolution" icon={adn} backgroundColor="#03A9F4" backgroundImage={blue_box} />
 					<MenuButton
 						title="Locations"
 						icon={location}
 						backgroundColor="#4CAF50"
+						backgroundImage={green_box}
 					/>
 				</View>
 
@@ -99,16 +89,29 @@ const MenuButton = ({
 	title,
 	icon,
 	backgroundColor,
-}: { title: string; icon: ImageSourcePropType; backgroundColor: string }) => (
-	<TouchableOpacity
-		style={[styles.menuButton, { backgroundColor }]}
-		onPress={() => {
-			router.push("/pokemons");
-		}}
-	>
-		<Text style={styles.menuText}>{title}</Text>
-		<Image source={icon} style={styles.menuIcon} />
-	</TouchableOpacity>
+	backgroundImage,
+}: {
+	title: string;
+	icon: ImageSourcePropType;
+	backgroundColor: string;
+	backgroundImage: ImageSourcePropType;
+}) => (
+	<View style={{ flex: 1, gap: 10 }}>
+		<TouchableOpacity
+			style={[styles.menuButton, { backgroundColor }]}
+			onPress={() => {
+				router.push("/pokemons");
+			}}
+		>
+			<Text style={styles.menuText}>{title}</Text>
+			<Image source={icon} style={styles.menuIcon} />
+		</TouchableOpacity>
+		<Image
+			source={backgroundImage || red_box}
+			style={styles.menuButtonBackground}
+			resizeMode="cover"
+		/>
+	</View>
 );
 
 const BattleCard = ({
@@ -125,13 +128,24 @@ const styles = StyleSheet.create({
 		paddingTop: 50,
 		paddingBottom: 100,
 	},
+	menuButtonBackground: {
+		position: "absolute",
+		width: "100%",
+		height: "100%",
+		resizeMode: "contain",
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		zIndex: -1,
+	},
 	container: {
 		flex: 1,
 		backgroundColor: "transparent",
 		paddingHorizontal: 16,
 	},
 	header: {
-		marginTop: 30,
+		marginVertical: 20,
 		flexDirection: "column",
 		justifyContent: "space-between",
 		alignItems: "flex-start",
@@ -156,21 +170,27 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		marginTop: 16,
+		gap: 16,
 	},
-	menuButton: {
-		width: "48%",
+	menuButton: {		
 		padding: 16,
-		borderRadius: 10,
+		marginTop: 16,
+		borderTopLeftRadius: 10,
+		borderBottomLeftRadius: 10,
+		borderTopRightRadius: 60,
+		borderBottomRightRadius: 10,
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
 		position: "relative",
-		height: 71,
+		height: 80,
+		backgroundColor: "radial-gradient(346.48% 633.13% at 100% -80.28%, #E80101 0%, #900101 78.68%)",
 	},
 	menuIcon: {
 		right: 0,
-		width: 71,
-		height: 71,
+		top: -20,
+		width: 80,
+		height: 80,
 	},
 	menuText: {
 		fontSize: 18,

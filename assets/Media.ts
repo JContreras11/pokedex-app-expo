@@ -13,3 +13,7 @@ export const splash = require('./images/splash.png');
 export const bg = require('./images/bg.png');
 export const group_3 = require('./images/group_3.png');
 export const group_4 = require('./images/group_4.png');
+export const blue_box = require('./images/blue_box.png');
+export const green_box = require('./images/green_box.png');
+export const yellow_box = require('./images/yellow_box.png');
+export const red_box = require('./images/red_box.png');

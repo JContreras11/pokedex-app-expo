@@ -7,68 +7,89 @@ import { router } from 'expo-router';
 
 const BottomNav = () => {
   return (
-    <LinearGradient
-      colors={['rgba(50,50,50,0.8)', 'rgba(30,30,30,0.9)']}
-      style={styles.container}
-    >
-      <TouchableOpacity style={styles.navItem}>
-        <Ionicons name="notifications-outline" size={24} color="#888" />
-        <Text style={styles.navText}>Notificaciones</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.homeButton} onPress={() => router.push('/')}>
+    <View style={styles.wrapper}>
+      <TouchableOpacity
+        style={styles.homeButton}
+        onPress={() => router.push("/")}
+      >
         <LinearGradient
-          colors={['#ff0000', '#cc0000']}
+          colors={["rgba(50,50,50,0.8)", "rgba(30,30,30,0.9)"]}
           style={styles.pokeball}
         >
           <View style={styles.pokeballInner}>
-            <Image source={pball} style={styles.pokeballLine}/>
+            <Image source={pball} style={styles.pokeballLine} />
           </View>
         </LinearGradient>
-        <Text style={styles.homeText}>Inicio</Text>
+        <Text style={styles.homeText}>Home</Text>
       </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.navItem}>
-        <Ionicons name="person-outline" size={24} color="#888" />
-        <Text style={styles.navText}>Usuario</Text>
-      </TouchableOpacity>
-    </LinearGradient>
+      <LinearGradient
+        colors={["rgba(50,50,50,0.8)", "rgba(30,30,30,0.9)"]}
+        style={styles.container}
+      >
+        <View style={styles.navGrid}>
+          <TouchableOpacity style={styles.navItem}>
+            <Ionicons name="notifications-outline" size={24} color="#888" />
+            <Text style={styles.navText}>Notifications</Text>
+          </TouchableOpacity>
+
+          <View style={styles.placeholderItem} />
+
+          <TouchableOpacity style={styles.navItem}>
+            <Ionicons name="person-outline" size={24} color="#888" />
+            <Text style={styles.navText}>User</Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+	navText: {
+		color: "#888",
+		fontSize: 12,
+	},
+	wrapper: {
+		position: 'absolute',
+		bottom: 0,
+		width: '100%',
+	},
 	container: {
 		flexDirection: "row",
 		justifyContent: "space-around",
 		alignItems: "center",
 		height: 80,
-		borderTopLeftRadius: 30,
-		borderTopRightRadius: 30,
+		borderTopLeftRadius: 25,
+		borderTopRightRadius: 25,
 		paddingBottom: 20,
-		position: "absolute",
-		bottom: 0,
-		width: "100%",
+	},
+	navGrid: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		width: '100%',
 	},
 	navItem: {
+		flex: 1,
 		alignItems: "center",
 	},
-	navText: {
-		color: "#888",
-		fontSize: 12,
-		marginTop: 4,
+	placeholderItem: {
+		flex: 1,
 	},
 	homeButton: {
+		position: 'absolute',
+		top: -30,
+		left: '50%',
+		marginLeft: -30,
 		alignItems: "center",
-		marginTop: -40,
 		zIndex: 100,
 	},
 	pokeball: {
-		width: 60,
-		height: 60,
-		borderRadius: 30,
+		width: 70,
+		height: 70,
+		borderRadius: 50,
 		justifyContent: "center",
 		alignItems: "center",
-		zIndex: 100,
 	},
 	pokeballInner: {
 		width: 54,

@@ -17,19 +17,32 @@ import Nav from "@/components/shared/Nav";
 import { GradientText } from "universal-gradient-text";
 import { bg } from "@/assets/Media";
 import { Feather } from "@expo/vector-icons";
+import { getColors, type ImageColorsResult } from "react-native-image-colors";
 
-// Placeholder icons/images
-const jigglypuff = "https://path_to_jigglypuff_image";
-const bulbasaur = "https://path_to_bulbasaur_image";
-const pikachu = "https://path_to_pikachu_image";
-const poliwag = "https://path_to_poliwag_image";
-const profilePicture = "https://path_to_profile_picture";
+const useImageColors = (url: string) => {
+	const [colors, setColors] = React.useState<ImageColorsResult | null>(null);
+
+	React.useEffect(() => {
+		const url = "https://i.imgur.com/68jyjZT.jpg";
+
+		getColors(url, {
+			fallback: "#228B22",
+			cache: true,
+			key: url,
+		}).then(setColors);
+	}, []);
+
+	return colors;
+};
 
 const Index = () => {
 	const [store, dispatch] = useContext(StoreContext);
 	const [loadingPokemon, setLoadingPokemon] = useState(null);
 	const [searchTerm, setSearchTerm] = useState("");
-
+	const colors = useImageColors("https://i.imgur.com/68jyjZT.jpg");
+	console.log(colors);
+	  
+	  
 	useEffect(() => {
 		const fetchPokemons = async () => {
 			try {
@@ -97,46 +110,71 @@ const Index = () => {
 				</View>
 
 				{/* Pokémon Grid */}
-				<ScrollView
-					contentContainerStyle={styles.contentContainer}
-				>
-					{filteredPokemons?.map((pokemon: PokemonList, index: number) => (
-						<PokemonCard
-							key={pokemon.name || index}
-							name={pokemon.name}
-							image={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split("/").slice(0, -1).pop()}.png`}
-							backgroundColor={getBackgroundColor(index)}
-							onPress={() => setPokemon(pokemon)}
-							isLoading={loadingPokemon === pokemon.name}
-						/>
-					))}
+				<ScrollView contentContainerStyle={styles.contentContainer}>
+					{filteredPokemons?.map((pokemon: PokemonList, index: number) => {						
+						// const colors = useImageColors(
+						// 	`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split("/").slice(0, -1).pop()}.png`,
+						// );
+						// console.log(colors);
+
+						return (
+							<PokemonCard
+								key={pokemon.name || index}
+								name={pokemon.name}
+								image={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split("/").slice(0, -1).pop()}.png`}
+								// backgroundColor={colors}
+								onPress={() => setPokemon(pokemon)}
+								isLoading={loadingPokemon === pokemon.name}
+							/>
+						);
+					})}
 				</ScrollView>
 			</View>
 		</>
 	);
 };
 
-// Función auxiliar para obtener colores de fondo
-const getBackgroundColor = (index: number) => {
-	const colors = ["#F8BBD0", "#A5D6A7", "#FFEB3B", "#81D4FA"];
-	return colors[index % colors.length];
+
+type PokemonTheme = {
+  background: string;
+  detail: string;
+  platform: "ios" | "android";
+  primary: string;
+  secondary: string;
 };
 
-const PokemonCard = ({ name, image, backgroundColor, onPress, isLoading }: { name: string; image: string; backgroundColor: string; onPress: () => void; isLoading: boolean }) => (
-	<TouchableOpacity style={[styles.pokemonCard, { backgroundColor }]} onPress={onPress} disabled={isLoading}>
-			<>
-				<Image source={{ uri: image }} style={styles.pokemonImage} />
-				<View style={styles.cardContent}>
-					<Text style={styles.pokemonName}>{name}</Text>
-					<View style={styles.arrowContainer}>
-						{isLoading ? (
-							<ActivityIndicator size="large" color="#fff" />
-						) : (
-							<Text style={styles.arrow}>➔</Text>
-						)}
-					</View>
+
+const PokemonCard = ({
+	name,
+	image,
+	backgroundColor,
+	onPress,
+	isLoading,
+}: {
+	name: string;
+	image: string;
+	backgroundColor?: PokemonTheme;
+	onPress: () => void;
+	isLoading: boolean;
+}) => (
+	<TouchableOpacity
+		style={[styles.pokemonCard, { backgroundColor: backgroundColor?.background || "#000" }]}
+		onPress={onPress}
+		disabled={isLoading}
+	>
+		<>
+			<Image source={{ uri: image }} style={styles.pokemonImage} />
+			<View style={styles.cardContent}>
+				<Text style={styles.pokemonName}>{name}</Text>
+				<View style={styles.arrowContainer}>
+					{isLoading ? (
+						<ActivityIndicator size="large" color="#fff" />
+					) : (
+						<Text style={styles.arrow}>➔</Text>
+					)}
 				</View>
-			</>
+			</View>
+		</>
 	</TouchableOpacity>
 );
 

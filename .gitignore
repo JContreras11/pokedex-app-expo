@@ -39,3 +39,8 @@ yarn-error.*
 
 expo-env.d.ts
 # @end expo-cli
+# ignores all .env files
+.env*
+
+/android
+/ios
